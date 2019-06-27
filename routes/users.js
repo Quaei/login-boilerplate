@@ -18,59 +18,69 @@ router.get('/register', function (req, res) {
 })
 
 // Register Handle
-router.post('/register', function(req, res) {
-    const {name, email, password, password2} = req.body;
+router.post('/register', function (req, res) {
+    const {
+        name,
+        password,
+        password2
+    } = req.body;
     let errors = [];
 
     // Check required fiels
-    if(!name || !email || !password || !password2) {
-        errors.push({msg: 'Please fill in all fields.'});
+    if (!name || !password || !password2) {
+        errors.push({
+            msg: 'Please fill in all fields.'
+        });
     }
 
     // Check passwords match
-    if(password !== password2) {
-        errors.push({msg: 'Passwords do not match'});
+    if (password !== password2) {
+        errors.push({
+            msg: 'Passwords do not match'
+        });
     }
 
     // Check pass length
-    if(password.length < 6) {
-        errors.push({msg: 'Password should be at least 6 characters'});
+    if (password.length < 6) {
+        errors.push({
+            msg: 'Password should be at least 6 characters'
+        });
     }
 
     if (errors.length > 0) {
         res.render('register', {
             errors,
             name,
-            email,
             password,
             password2
         });
-    }
-    else {
+    } else {
         // Validation passed
-        User.findOne({email: email})
+        User.findOne({
+                name: name
+            })
             .then(user => {
                 if (user) {
                     // User exists
-                    errors.push({msg: 'Email is already registerd.'});
+                    errors.push({
+                        msg: 'Username is already taken.'
+                    });
                     res.render('register', {
                         errors,
                         name,
-                        email,
                         password,
                         password2
                     });
                 } else {
-                    const newUser = new User ({
+                    const newUser = new User({
                         name,
-                        email,
                         password
                     });
 
                     // Hash Password
-                    bcrypt.genSalt(10, function(err, salt) {
-                        bcrypt.hash(newUser.password, salt, function(err, hash) {
-                            if(err) throw err;
+                    bcrypt.genSalt(10, function (err, salt) {
+                        bcrypt.hash(newUser.password, salt, function (err, hash) {
+                            if (err) throw err;
 
                             // Set password to hashed
                             newUser.password = hash;
@@ -90,7 +100,7 @@ router.post('/register', function(req, res) {
 });
 
 // Login handle
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
     passport.authenticate('local', {
         successRedirect: '/dashboard',
         failureRedirect: '/users/login',
@@ -99,7 +109,7 @@ router.post('/login', function(req, res, next) {
 });
 
 // Logout handle
-router.get('/logout', function(req, res) {
+router.get('/logout', function (req, res) {
     req.logout();
     req.flash('successMsg', 'You are logged out.');
     res.redirect('/users/login');
