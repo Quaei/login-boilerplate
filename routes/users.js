@@ -43,8 +43,14 @@ router.post('/register', function (req, res) {
     // Check pass length
     if (password.length < 6) {
         errors.push({
-            msg: 'Password should be at least 6 characters'
+            msg: 'Password must be at least 6 characters'
         });
+    }
+
+    if (name.length > 20) {
+        errors.push({
+            msg: 'Username cannot be longer than 20 characters'
+        })
     }
 
     if (errors.length > 0) {
@@ -57,7 +63,7 @@ router.post('/register', function (req, res) {
     } else {
         // Validation passed
         User.findOne({
-                name: name
+                name: name.toLowerCase()
             })
             .then(user => {
                 if (user) {
@@ -73,8 +79,8 @@ router.post('/register', function (req, res) {
                     });
                 } else {
                     const newUser = new User({
-                        name,
-                        password
+                        name: name.toLowerCase(),
+                        password: password
                     });
 
                     // Hash Password

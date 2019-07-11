@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const socket = require('socket.io')
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -51,7 +52,18 @@ app.use(function(req, res, next) {
 // Routes - (req, res) = request, response!
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+app.use(express.static('public'))
 
-app.listen(PORT, function() {
+const server = app.listen(PORT, function() {
     console.log(`Server on started on port ${PORT}`);
 });
+
+const io = socket(server)
+
+io.on('connection', socket => {
+    // connected
+
+    socket.on('disconnect', () => {
+        // disconnected
+    })
+})

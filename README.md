@@ -2,7 +2,7 @@
 Just clone and have a template done for logging in / registering.
 
 # Change:
-in config/keys.js -> test to your database name
+in config/keys.js -> games to your database name
 
 in views/layout.ejs -> website title
 

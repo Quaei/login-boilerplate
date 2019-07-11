@@ -10,12 +10,12 @@ module.exports = function(passport) {
         new LocalStrategy({usernameField: 'name'}, function(name, password, done) {
             // Match user
             User.findOne({
-                name: name
+                name: name.toLowerCase()
             })
                 .then(user => {
                     if(!user) {
                         return done(null, false, {
-                            message: 'That username is not registered.'
+                            message: 'Incorrect username or password'
                         });
                     }
 
